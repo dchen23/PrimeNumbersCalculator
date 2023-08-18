@@ -9,6 +9,9 @@
 - Test Device: OnePlus 7 Pro (Android 11)
  
 ## Usage
+
+![main ui](imags/main_ui.jpg)
+
 1. Type anything you like inside `INPUT` text box;
    > NOTE: Only intergers in range **(0, 50000]** will return proper result, non-calculable input will always return **`0`** !
 3. Click the `RUN` button to calculate all prime numbers;
@@ -75,6 +78,34 @@ The functionality can be divided into four main parts:
 - [X] Threads/resources should be properly terminated/released after UI has been closed.
 
 ## Screenshots
+
+<details>
+<summary> 1. Display result on output textview </summary>
+
+![main ui](imags/result.jpg)
+
+</details>
+
+<details>
+<summary> 2. Buttons are unclickable during calculation </summary>
+
+![main ui](imags/calculating.jpg)
+
+</details>
+
+<details>
+<summary> 3. Each workflow process in a threaded operation, different <code>tid</code> under same <code>pid</code> </summary>
+
+![main ui](imags/threading.png)
+
+</details>
+
+<details>
+<summary> 4. Threads are released when UI is inactive. </summary>
+
+![main ui](imags/cleaning.png)
+
+</details>
 
 ## TODO
 - [ ] Utilize a hash table to store calculated `order, prime_number` pairs
