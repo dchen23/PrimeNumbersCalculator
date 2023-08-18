@@ -1,22 +1,34 @@
 #include <jni.h>
-#include <string>
-#include <regex>
-#include <android/log.h>
-#include "prime.h"
+#include "PrimeNumbersAPI.h"
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_prime_MainActivity_nativeGetStringOfPrimeNumbers(
         JNIEnv* env,
         jobject obj /* this */,
+        jlong native_wrapper,
         jstring str) {
 
     const char* utfChars = env->GetStringUTFChars(str, nullptr);
-    std::string input;
-    input.assign(utfChars);
+
+    std::string result = prim_num_api_Run(
+            reinterpret_cast<prim_num_api_handle>(native_wrapper), utfChars);
+
     env->ReleaseStringUTFChars(str, utfChars);
 
-    prim_num_api::PrimeNumbers handle(8);
-    std::string result = handle.GetPrimeList(std::move(input));
-
     return env->NewStringUTF( result.c_str() );
+}
+
+extern "C" JNIEXPORT jlong JNICALL
+Java_com_example_prime_MainActivity_nativeCreatePrimeNumberHandle(
+        JNIEnv* env,
+        jobject obj /* this */) {
+    return reinterpret_cast<jlong>(prim_num_api_Create());
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_prime_MainActivity_nativeDestroyPrimeNumberHandle(
+        JNIEnv* env,
+        jobject obj /* this */,
+        jlong native_wrapper) {
+    prim_num_api_Destroy(reinterpret_cast<prim_num_api_handle>(native_wrapper));
 }

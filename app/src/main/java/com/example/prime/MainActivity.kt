@@ -8,6 +8,7 @@ import com.example.prime.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var nativeWrapper: Long = 0L;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,16 +16,26 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        nativeWrapper = nativeCreatePrimeNumberHandle();
+
         // Example of a call to a native method
-        binding.sampleText.text = nativeGetStringOfPrimeNumbers(" 30 -123456 16.7 ,, 8 9 -10 --== +22 34 45 56 67 78 89 90")
+        binding.sampleText.text = nativeGetStringOfPrimeNumbers(nativeWrapper, " 30 -123456 16.7 ,, 8 9 -10 --== +22 34 45 56 67 78 89 90")
         binding.buttonClr.isEnabled = false
+    }
+
+    override fun onDestroy() {
+        if (nativeWrapper != 0L)
+            nativeDestroyPrimeNumberHandle(nativeWrapper)
+        super.onDestroy()
     }
 
     /**
      * A native method that is implemented by the 'prime' native library,
      * which is packaged with this application.
      */
-    external fun nativeGetStringOfPrimeNumbers(str: String): String
+    external fun nativeCreatePrimeNumberHandle(): Long
+    external fun nativeGetStringOfPrimeNumbers(nativeWrapper: Long, str: String): String
+    external fun nativeDestroyPrimeNumberHandle(nativeWrapper: Long)
 
     companion object {
         // Used to load the 'prime' library on application startup.

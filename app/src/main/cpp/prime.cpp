@@ -4,7 +4,6 @@
 
 #pragma once
 #include "prime.h"
-#include <math.h>
 #include <android/log.h>
 
 using namespace prim_num_api;
@@ -13,9 +12,13 @@ PrimeNumbers::PrimeNumbers(int num_threads):
         max_prim_order_ { 0 },
         thread_pool_ { new ThreadPool(num_threads) },
         kNumericegexPattern { std::regex("[+-]?[0-9]+(\\.[0-9]+)?") },
-        prim_list_ { std::make_unique<std::unordered_map<int, int>>() } {}
+        prim_list_ { std::make_unique<std::unordered_map<int, int>>() }
+{
+    prim_list_->reserve(kMaxPrimeOrder);
+}
 
 PrimeNumbers::~PrimeNumbers() {
+    __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "Clean threads: %d", thread_pool_->size());
     delete thread_pool_;
 }
 
@@ -57,7 +60,6 @@ std::string PrimeNumbers::GetPrimeList(std::string&& str) {
     int input_index = 0;
     std::sregex_iterator iterator(str.begin(), str.end(), kNumericegexPattern);
     std::sregex_iterator end;
-    __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "num threads: %d", thread_pool_->size());
     while (iterator != end) {
         std::smatch match = *iterator;
         __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "input string: %s", match.str().c_str());
