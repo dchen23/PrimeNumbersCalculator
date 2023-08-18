@@ -71,9 +71,7 @@ std::string PrimeNumbers::GetPrimeList(std::string&& str) {
     std::sregex_iterator end;
     while (iterator != end) {
         std::smatch match = *iterator;
-        __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "input string: %s", match.str().c_str());
         int input = std::stof(match.str());
-        __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "input: %d", input);
 
         results.emplace_back(thread_pool_->enqueue([input_index, input, this] {
             __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "thread input index: %d", input_index);
@@ -98,8 +96,12 @@ std::string PrimeNumbers::GetPrimeList(std::string&& str) {
     });
 
     std::string output;
-    for (const auto& pair : pairs) {
-        output += std::to_string(pair.second) + " ";
+
+    for (auto it = pairs.begin(); it != pairs.end(); ++it) {
+        const auto& pair = *it;
+        output += std::to_string(pair.second);
+        if (std::next(it) != pairs.end())
+            output += ", ";
     }
 
     mutex_.unlock();
