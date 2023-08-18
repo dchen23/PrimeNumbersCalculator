@@ -1,6 +1,12 @@
 # PrimeNumbersCalculator
 
- A cross-platform library and an Android app that can calculate the N:th prime number based on user input.
+A cross-platform library and an Android app that can calculate the N:th prime number based on user input.
+
+APK: [Download](https://github.com/dchen23/PrimeNumbersCalculator/releases/download/v0.1/app-debug.apk)
+
+```
+adb install app-debug.apk
+```
 
 ## Environment
 - Android Studio Hedgehog | 2023.1.1 Canary 16
