@@ -2,6 +2,7 @@ package com.example.prime
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import com.example.prime.databinding.ActivityMainBinding
 
@@ -18,9 +19,33 @@ class MainActivity : AppCompatActivity() {
 
         nativeWrapper = nativeCreatePrimeNumberHandle();
 
-        // Example of a call to a native method
-        binding.sampleText.text = nativeGetStringOfPrimeNumbers(nativeWrapper, " 30 -123456 16.7 ,, 8 9 -10 --== +22 34 45 56 67 78 89 90")
-        binding.buttonClr.isEnabled = false
+        // binding.outputText.text = nativeGetStringOfPrimeNumbers(nativeWrapper, " 30 -123456 16.7 ,, 8 9 -10 --== +22 34 45 56 67 78 89 90")
+        binding.buttonClr.setOnClickListener {
+            binding.editTextInput.text = null
+            binding.outputText.text = null
+        }
+
+        binding.buttonRun.setOnClickListener {
+            binding.buttonRun.isEnabled = false
+            binding.buttonClr.isEnabled = false
+            binding.outputText.text = "Calculating"
+            Thread {
+                val output: String
+                if (nativeWrapper != 0L) {
+                    output = nativeGetStringOfPrimeNumbers(nativeWrapper, binding.editTextInput.text.toString())
+                } else {
+                    output = "Error: 100"
+                }
+
+                runOnUiThread {
+                    binding.outputText.text = output
+                    binding.buttonClr.isEnabled = true
+                    binding.buttonRun.isEnabled = true
+                }
+            }.start()
+        }
+
+
     }
 
     override fun onDestroy() {
