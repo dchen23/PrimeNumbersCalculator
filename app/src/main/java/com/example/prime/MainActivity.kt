@@ -16,14 +16,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+        binding.sampleText.text = nativeGetStringOfPrimeNumbers(" 30 -123456 16.7 ,, 8 9 -10 --== +22 34 45 56 67 78 89 90")
+        binding.buttonClr.isEnabled = false
     }
 
     /**
      * A native method that is implemented by the 'prime' native library,
      * which is packaged with this application.
      */
-    external fun stringFromJNI(): String
+    external fun nativeGetStringOfPrimeNumbers(str: String): String
 
     companion object {
         // Used to load the 'prime' library on application startup.
