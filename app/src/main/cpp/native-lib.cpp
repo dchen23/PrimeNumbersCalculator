@@ -32,3 +32,19 @@ Java_com_example_prime_MainActivity_nativeDestroyPrimeNumberHandle(
         jlong native_wrapper) {
     prim_num_api_Destroy(reinterpret_cast<prim_num_api_handle>(native_wrapper));
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_prime_MainActivity_nativeResumeWorkers(
+        JNIEnv* env,
+        jobject obj /* this */,
+        jlong native_wrapper) {
+    prim_num_api_Resume(reinterpret_cast<prim_num_api_handle>(native_wrapper));
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_prime_MainActivity_nativePauseWorkers(
+        JNIEnv* env,
+        jobject obj /* this */,
+        jlong native_wrapper) {
+    prim_num_api_Pause(reinterpret_cast<prim_num_api_handle>(native_wrapper));
+}

@@ -17,6 +17,14 @@ void prim_num_api_Destroy(prim_num_api_handle handle) {
     delete static_cast<PrimeNumbers*>(handle);
 }
 
+void prim_num_api_Resume(prim_num_api_handle handle) {
+    static_cast<PrimeNumbers*>(handle)->ResumeWorkers();
+}
+
+void prim_num_api_Pause(prim_num_api_handle handle) {
+    static_cast<PrimeNumbers*>(handle)->PauseWorkers();
+}
+
 std::string prim_num_api_Run(prim_num_api_handle handle, const char* c_str) {
     std::string input;
     input.assign(c_str);

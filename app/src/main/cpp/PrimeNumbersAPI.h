@@ -15,6 +15,8 @@ extern "C" {
 typedef void* prim_num_api_handle;
 
 prim_num_api_handle prim_num_api_Create();
+void prim_num_api_Resume(prim_num_api_handle);
+void prim_num_api_Pause(prim_num_api_handle);
 void prim_num_api_Destroy(prim_num_api_handle);
 std::string prim_num_api_Run(prim_num_api_handle, const char *);
 

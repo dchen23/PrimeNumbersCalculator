@@ -17,6 +17,7 @@ class PrimeNumbers {
 private:
     std::unique_ptr<std::unordered_map<int, int>> prim_list_;
     int max_prim_order_;
+    volatile bool is_working_;
     std::mutex mutex_;
     bool IsPrime(int);
     int GetNthPrimeNumber(int);
@@ -28,6 +29,8 @@ public:
     PrimeNumbers(const PrimeNumbers& pm) = delete;
     void operator= (const PrimeNumbers& pm) = delete;
     std::string GetPrimeList(std::string&&);
+    void ResumeWorkers();
+    void PauseWorkers();
     PrimeNumbers(int num_threads = 4);
     ~PrimeNumbers();
 };

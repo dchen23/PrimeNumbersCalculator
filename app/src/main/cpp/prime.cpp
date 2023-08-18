@@ -10,6 +10,7 @@ using namespace prim_num_api;
 
 PrimeNumbers::PrimeNumbers(int num_threads):
         max_prim_order_ { 0 },
+        is_working_ { true },
         thread_pool_ { new ThreadPool(num_threads) },
         kNumericegexPattern { std::regex("[+-]?[0-9]+(\\.[0-9]+)?") },
         prim_list_ { std::make_unique<std::unordered_map<int, int>>() }
@@ -18,8 +19,10 @@ PrimeNumbers::PrimeNumbers(int num_threads):
 }
 
 PrimeNumbers::~PrimeNumbers() {
-    __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "Clean threads: %d", thread_pool_->size());
-    delete thread_pool_;
+    if (is_working_) {
+        __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "Clean threads: %d", thread_pool_->size());
+        delete thread_pool_;
+    }
 }
 
 bool PrimeNumbers::IsPrime(int num) {
@@ -54,6 +57,12 @@ int PrimeNumbers::GetNthPrimeNumber(int n) {
 }
 
 std::string PrimeNumbers::GetPrimeList(std::string&& str) {
+
+    if (!is_working_) {
+        __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "Threads need to wake up.");
+        return std::move("Slow Down ...");
+    }
+
     mutex_.lock();
 
     std::vector<std::future<std::pair<int, int>>> results;
@@ -95,4 +104,26 @@ std::string PrimeNumbers::GetPrimeList(std::string&& str) {
 
     mutex_.unlock();
     return std::move(output);
+}
+
+void PrimeNumbers::ResumeWorkers() {
+    if (is_working_)
+        return;
+
+    mutex_.lock();
+    thread_pool_ = new ThreadPool(8);
+    is_working_ = true;
+    __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "Start threads: %d", thread_pool_->size());
+    mutex_.unlock();
+}
+
+void PrimeNumbers::PauseWorkers() {
+    if (!is_working_)
+        return;
+
+    mutex_.lock();
+    __android_log_print(ANDROID_LOG_DEBUG, "prime_native", "Clean threads: %d", thread_pool_->size());
+    is_working_ = false;
+    delete thread_pool_;
+    mutex_.unlock();
 }

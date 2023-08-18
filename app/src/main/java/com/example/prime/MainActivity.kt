@@ -24,9 +24,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        if (nativeWrapper != 0L)
+        if (nativeWrapper != 0L) {
             nativeDestroyPrimeNumberHandle(nativeWrapper)
+            nativeWrapper = 0L
+        }
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (nativeWrapper != 0L)
+            nativeResumeWorkers(nativeWrapper)
+    }
+
+    override fun onPause() {
+        if (nativeWrapper != 0L)
+            nativePauseWorkers(nativeWrapper)
+
+        super.onPause()
     }
 
     /**
@@ -36,6 +52,8 @@ class MainActivity : AppCompatActivity() {
     external fun nativeCreatePrimeNumberHandle(): Long
     external fun nativeGetStringOfPrimeNumbers(nativeWrapper: Long, str: String): String
     external fun nativeDestroyPrimeNumberHandle(nativeWrapper: Long)
+    external fun nativeResumeWorkers(nativeWrapper: Long)
+    external fun nativePauseWorkers(nativeWrapper: Long)
 
     companion object {
         // Used to load the 'prime' library on application startup.
