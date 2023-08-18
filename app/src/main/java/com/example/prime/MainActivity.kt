@@ -2,7 +2,6 @@ package com.example.prime
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import com.example.prime.databinding.ActivityMainBinding
 
@@ -10,6 +9,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var nativeWrapper: Long = 0L;
+    private val calculatingStatusHint: String = "Calculating..."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
 
         nativeWrapper = nativeCreatePrimeNumberHandle();
 
-        // binding.outputText.text = nativeGetStringOfPrimeNumbers(nativeWrapper, " 30 -123456 16.7 ,, 8 9 -10 --== +22 34 45 56 67 78 89 90")
         binding.buttonClr.setOnClickListener {
             binding.editTextInput.text = null
             binding.outputText.text = null
@@ -28,13 +27,13 @@ class MainActivity : AppCompatActivity() {
         binding.buttonRun.setOnClickListener {
             binding.buttonRun.isEnabled = false
             binding.buttonClr.isEnabled = false
-            binding.outputText.text = "Calculating"
+            binding.outputText.text = calculatingStatusHint
             Thread {
-                val output: String
-                if (nativeWrapper != 0L) {
-                    output = nativeGetStringOfPrimeNumbers(nativeWrapper, binding.editTextInput.text.toString())
+                val output: String = if (nativeWrapper != 0L) {
+                    nativeGetStringOfPrimeNumbers(nativeWrapper,
+                        binding.editTextInput.text.toString())
                 } else {
-                    output = "Error: 100"
+                    "Error: 100"
                 }
 
                 runOnUiThread {
